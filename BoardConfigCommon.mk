@@ -255,3 +255,4 @@ TARGET_USES_MKE2FS := true
 
 # Inherit from the proprietary version
 include vendor/nubia/msm8952-common/BoardConfigVendor.mk
+BUILD_BROKEN_DUP_RULES := true
