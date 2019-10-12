@@ -223,6 +223,7 @@ TARGET_USES_ALTERNATIVE_MANUAL_NETWORK_SELECT := true
 ifeq ($(WITH_TWRP),true)
 include $(VENDOR_PATH)/twrp.mk
 endif
+BOARD_SEPOLICY_DIRS += $(VENDOR_PATH)/sepolicy-minimal
 
 # Wifi
 WPA_SUPPLICANT_VERSION      := VER_0_8_X
