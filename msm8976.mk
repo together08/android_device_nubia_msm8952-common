@@ -203,13 +203,6 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/sec_config:$(TARGET_COPY_OUT_VENDOR)/etc/sec_config
 
-# Keylaouts
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/keylayout/nubia_synaptics_dsx.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/nubia_synaptics_dsx.kl \
-    $(LOCAL_PATH)/keylayout/gpio-keys.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/gpio-keys.kl \
-    $(LOCAL_PATH)/keylayout/gf5216m.kl:system/usr/keylayout/gf5216m.kl \
-    $(LOCAL_PATH)/keylayout/synaptics_btn.kl:system/usr/keylayout/synaptics_btn.kl
-
 # Lights
 PRODUCT_PACKAGES += \
     android.hardware.light@2.0-service.msm8976
