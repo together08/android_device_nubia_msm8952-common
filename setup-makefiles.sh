@@ -18,7 +18,7 @@
 #
 
 set -e
-
+SRC=~/
 INITIAL_COPYRIGHT_YEAR=2019
 
 # Load extract_utils and do some sanity checks
