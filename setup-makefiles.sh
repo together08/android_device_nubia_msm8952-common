@@ -34,12 +34,13 @@ if [ ! -f "$HELPER" ]; then
 fi
 . "$HELPER"
 
-# Initialize the helper
-setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT"
+# Initialize the helper for common
+setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT" true
 
 # Copyright headers and guards
 write_headers "nx589j nx591j"
 
+# Main Qcom blobs
 write_makefiles "$MY_DIR"/proprietary-files-qc.txt
 
 # Blobs for TWRP data decryption
@@ -61,8 +62,10 @@ if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
     write_headers
 
     # The standard device blobs
-    write_makefiles "$MY_DIR"/../$DEVICE/proprietary-files.txt
+    write_makefiles "$MY_DIR"/../$DEVICE/proprietary-files.txt true
 
     # We are done!
     write_footers
 fi
+1
+Downloading1

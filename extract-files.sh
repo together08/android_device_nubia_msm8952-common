@@ -62,9 +62,8 @@ extract "$MY_DIR"/proprietary-files-twrp.txt "$SRC" "$SECTION"
 
 TWRP_QSEECOMD="$MK_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary/recovery/root/sbin/qseecomd
 
+BLOB_ROOT="$MK_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary
 sed -i "s|/system/bin/linker64|/sbin/linker64\x0\x0\x0\x0\x0\x0|g" "$TWRP_QSEECOMD"
-
-echo "debug"
 echo ""$MY_DIR"/../$DEVICE/proprietary-files.txt"
 if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
     # Reinitialize the helper for device
@@ -73,3 +72,5 @@ if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
 fi
 
 "$MY_DIR"/setup-makefiles.sh
+1
+Downloading1
