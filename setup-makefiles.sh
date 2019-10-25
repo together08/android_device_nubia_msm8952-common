@@ -38,7 +38,7 @@ fi
 setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT"
 
 # Copyright headers and guards
-write_headers "nx589j"
+write_headers "nx589j nx591j"
 
 write_makefiles "$MY_DIR"/proprietary-files-qc.txt
 
