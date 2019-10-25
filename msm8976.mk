@@ -315,7 +315,7 @@ PRODUCT_PACKAGES += \
 
 # Ramdisk nubia specific
 PRODUCT_PACKAGES += \
-    init.nb.rc
+    init.nb.common.rc
 
 # RenderScript HAL
 PRODUCT_PACKAGES += \
