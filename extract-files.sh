@@ -19,9 +19,6 @@
 
 set -e
 
-DEVICE=nx589j
-VENDOR=nubia
-SRC=~/
 # Load extract_utils and do some sanity checks
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
@@ -57,16 +54,22 @@ if [ -z "$SRC" ]; then
 fi
 
 # Initialize the helper
-setup_vendor "$DEVICE" "$VENDOR" "$MK_ROOT" false "$CLEAN_VENDOR"
+setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT" true "$CLEAN_VENDOR"
 
 extract "$MY_DIR"/proprietary-files-qc.txt "$SRC" "$SECTION"
 
-extract "$MY_DIR"/proprietary-files-nubia.txt "$SRC" "$SECTION"
-
 extract "$MY_DIR"/proprietary-files-twrp.txt "$SRC" "$SECTION"
 
-TWRP_QSEECOMD="$CM_ROOT"/vendor/"$VENDOR"/"$DEVICE"/proprietary/recovery/root/sbin/qseecomd
+TWRP_QSEECOMD="$MK_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary/recovery/root/sbin/qseecomd
 
 sed -i "s|/system/bin/linker64|/sbin/linker64\x0\x0\x0\x0\x0\x0|g" "$TWRP_QSEECOMD"
+
+echo "debug"
+echo ""$MY_DIR"/../$DEVICE/proprietary-files.txt"
+if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
+    # Reinitialize the helper for device
+    setup_vendor "$DEVICE" "$VENDOR" "$MK_ROOT" false "$CLEAN_VENDOR"
+    extract "$MY_DIR"/../$DEVICE/proprietary-files.txt "$SRC" "$SECTION"
+fi
 
 "$MY_DIR"/setup-makefiles.sh

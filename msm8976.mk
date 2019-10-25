@@ -394,4 +394,4 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/wpa_supplicant_overlay.conf:$(TARGET_COPY_OUT_VENDOR)/etc/wifi/wpa_supplicant_overlay.conf
 
 # Call the proprietary setup
-$(call inherit-product, vendor/nubia/nx589j/nx589j-vendor.mk)
+$(call inherit-product, vendor/nubia/msm8976-common/msm8976-common-vendor.mk)
