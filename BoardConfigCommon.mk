@@ -251,6 +251,11 @@ TARGET_USERIMAGES_USE_EXT4 := true
 TARGET_USERIMAGES_USE_F2FS := true
 TARGET_USES_MKE2FS := true
 
+BOARD_ROOT_EXTRA_FOLDERS := \
+    /persist \
+    /firmware \
+    /dsp
+
 # Inherit from the proprietary version
 include vendor/nubia/msm8952-common/BoardConfigVendor.mk
 BUILD_BROKEN_DUP_RULES := true
