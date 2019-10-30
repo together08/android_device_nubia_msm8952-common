@@ -67,7 +67,6 @@ static int last_state = BREATH_SOURCE_NONE;
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
 
-
 char const*const BREATH_RED_LED
         = "/sys/class/leds/nubia_led/blink_mode";
 
@@ -416,7 +415,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "Lights Module for Nubia Z11mini&miniS",
-    .author = "SY",
+    .name = "Lights Module for Nubia Z17 MiniS",
+    .author = "MoKee Project",
     .methods = &lights_module_methods,
 };
