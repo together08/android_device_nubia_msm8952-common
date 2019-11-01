@@ -381,7 +381,7 @@ PRODUCT_COPY_FILES += \
 
 # Thermal
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/thermal-engine-srtphone.conf:system/etc/thermal-engine-srtphone.conf
+    $(LOCAL_PATH)/configs/thermal-engine-srtphone.conf:$(TARGET_COPY_OUT_SYSTEM)/etc/thermal-engine-srtphone.conf
 
 # USB HAL
 PRODUCT_PACKAGES += \
