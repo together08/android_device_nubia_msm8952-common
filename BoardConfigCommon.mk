@@ -178,7 +178,8 @@ BOARD_ROOT_EXTRA_SYMLINKS := \
 
 BOARD_ROOT_EXTRA_FOLDERS := \
     /firmware \
-    /dsp
+    /dsp \
+    /cust
 
 # HIDL
 DEVICE_MANIFEST_FILE := $(VENDOR_PATH)/manifest.xml
