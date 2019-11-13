@@ -143,11 +143,8 @@ static int write_str(char const* path, char* value)
 static int rgb_to_brightness(struct light_state_t const* state)
 {
     int color = state->color & 0x00ffffff;
-    return (
-      ((color >> 16) & 0xff)
-    + ((color >> 8 ) & 0xff)
-    + ( color        & 0xff)
-    ) / 3;
+    return ((77*((color>>16)&0x00ff))
+            + (150*((color>>8)&0x00ff)) + (29*(color&0x00ff))) >> 8;
 }
 
 static int set_light_backlight(struct light_device_t* dev,
@@ -161,6 +158,9 @@ static int set_light_backlight(struct light_device_t* dev,
     int brightness = ((77*((color>>16)&0x00ff))
             + (150*((color>>8)&0x00ff)) + (29*(color&0x00ff))) >> 4;
 #endif
+    if(!dev) {
+        return -1;
+    }
     pthread_mutex_lock(&g_lock);
     err = write_int(LCD_FILE, brightness);
     pthread_mutex_unlock(&g_lock);
