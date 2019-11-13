@@ -116,6 +116,7 @@
          Must be in the range specified by minimum and maximum. -->
     <integer name="config_screenBrightnessSettingDefault">134</integer>
 
+    <integer name="config_autoBrightnessBrighteningLightFastDebounce">500</integer>
     <integer name="config_autoBrightnessBrighteningLightDebounce">2000</integer>
     <integer name="config_autoBrightnessDarkeningLightDebounce">6000</integer>
 
