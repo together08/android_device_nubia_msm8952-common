@@ -305,12 +305,6 @@ service mdtpd /system/vendor/bin/mdtpd
     user root
     group system radio drmrpc
 
-on property:persist.gesture.swapbuttons=*
-    write /sys/devices/soc/78b8000.i2c/i2c-4/4-0020/swap_buttons ${persist.gesture.swapbuttons}
-
-on property:persist.gesture.palmsleep=*
-    write /sys/devices/soc/78b8000.i2c/i2c-4/4-0020/palm_sleep ${persist.gesture.palmsleep}
-
 on boot
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/fw_name PR1702898-s3528t_00260005_00380008.img
     write /sys/devices/soc.0/78b8000.i2c/i2c-4/4-0020/input/input0/update_fw 1
