@@ -66,7 +66,7 @@ static int last_state = BREATH_SOURCE_NONE;
 
 char const*const LCD_FILE
         = "/sys/class/leds/lcd-backlight/brightness";
-		
+
 char const*const BREATH_RED_LED
         = "/sys/class/leds/nubia_led/blink_mode";
 
@@ -205,16 +205,16 @@ static int set_breath_light_locked(int event,
         offMS = state->flashOffMS;
 	    switch(onMS){
 		case 5000:
-		    onMS = 1;
+		    onMS = 5;
 		    break;
 		case 2000:
-		    onMS = 1;
+		    onMS = 4;
 		    break;
 		case 1000:
-		    onMS = 1;
+		    onMS = 3;
 		    break;
 		case 500:
-		    onMS = 1;
+		    onMS = 2;
 		    break;
 		case 250:
 		    onMS = 1;
@@ -225,16 +225,16 @@ static int set_breath_light_locked(int event,
 
 	    switch(offMS){
 		case 5000:
-		    offMS = 1;
+		    offMS = 5;
 		    break;
 		case 2000:
-		    offMS = 1;
+		    offMS = 4;
 		    break;
 		case 1000:
-		    offMS = 1;
+		    offMS = 3;
 		    break;
 		case 500:
-		    offMS = 1;
+		    offMS = 2;
 		    break;
 		case 250:
 		    offMS = 1;
@@ -415,7 +415,7 @@ struct hw_module_t HAL_MODULE_INFO_SYM = {
     .version_major = 1,
     .version_minor = 0,
     .id = LIGHTS_HARDWARE_MODULE_ID,
-    .name = "Lights Module for Nubia MSM8976 Devices",
+    .name = "Lights Module for Nubia Z17 MiniS",
     .author = "MoKee Project",
     .methods = &lights_module_methods,
 };
