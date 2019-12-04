@@ -429,3 +429,9 @@ PRODUCT_COPY_FILES += \
 
 # Call the proprietary setup
 $(call inherit-product, vendor/nubia/msm8952-common/msm8952-common-vendor.mk)
+
+# Cast hacks
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.debug.wfd.enable=1 \
+	ro.hdmi.enable=true \
+	ro.hdmi.mirror.enable=true
