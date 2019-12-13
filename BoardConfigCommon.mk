@@ -64,6 +64,9 @@ KERNEL_TOOLCHAIN_PREFIX := aarch64-linux-android-
 # ANT+
 BOARD_ANT_WIRELESS_DEVICE := "vfs-prerelease"
 
+# Properties
+BOARD_VNDK_RUNTIME_DISABLE := true
+
 # Audio
 BOARD_USES_ALSA_AUDIO := true
 USE_CUSTOM_AUDIO_POLICY := 1
