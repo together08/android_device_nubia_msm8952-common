@@ -258,6 +258,10 @@ TARGET_USES_ALTERNATIVE_MANUAL_NETWORK_SELECT := true
 ifeq ($(WITH_TWRP),true)
 include $(VENDOR_PATH)/twrp.mk
 endif
+
+# SELinux
+include device/qcom/sepolicy-legacy-um/sepolicy.mk
+#BOARD_SEPOLICY_DIRS += $(VENDOR_PATH)/sepolicy
 BOARD_SEPOLICY_DIRS += $(VENDOR_PATH)/sepolicy-minimal
 
 # Wifi
