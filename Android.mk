@@ -65,31 +65,73 @@ $(RFS_MSM_MPSS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
 
 ALL_DEFAULT_INSTALLED_MODULES += $(RFS_MSM_ADSP_SYMLINKS) $(RFS_MSM_MPSS_SYMLINKS)
 
-WLAN_PERSIST_INI_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/prima/WCNSS_qcom_cfg.ini
-$(WLAN_PERSIST_INI_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@echo "WCNSS persist config ini link: $@"
+WCNSS_IMAGES := \
+    wcnss.b00 wcnss.b01 wcnss.b02 wcnss.b03 wcnss.b04 wcnss.b05 wcnss.b06 \
+    wcnss.b07 wcnss.b08 wcnss.b09 wcnss.b10 wcnss.b11 wcnss.b12 wcnss.mdt \
+    wcnssver.cfg
+
+WCNSS_SYMLINKS := $(addprefix $(TARGET_OUT_VENDOR)/firmware/image/,$(notdir $(WCNSS_IMAGES)))
+$(WCNSS_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "WCNSS firmware link: $@"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide) ln -sf /persist/WCNSS_qcom_cfg.ini $@
+	$(hide) ln -sf /firmware/wcnss/$(notdir $@) $@
 
-ALL_DEFAULT_INSTALLED_MODULES += $(WLAN_PERSIST_INI_SYMLINK)
+ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_SYMLINKS)
 
-WCNSS_PERSIST_FW_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/prima/WCNSS_qcom_wlan_nv.bin
-$(WCNSS_PERSIST_FW_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@echo "WCNSS persist config ini link: $@"
+FINGERID_IMAGES := \
+    fingerid.b00 fingerid.b01 fingerid.b02 fingerid.b03 fingerid.mdt
+FINGERID_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(FINGERID_IMAGES)))
+$(FINGERID_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "FINGERID firmware link: $@"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide) ln -sf /persist/WCNSS_qcom_wlan_nv.bin $@
-
-ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_PERSIST_FW_SYMLINK)
-
-WCNSS_PERSIST_DICT_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/prima/WCNSS_wlan_dictionary.dat
-$(WCNSS_PERSIST_DICT_SYMLINK): $(LOCAL_INSTALLED_MODULE)
-	@echo "WCNSS persist config ini link: $@"
+	$(hide) ln -sf /firmware/image/$(notdir $@) $@
+ALL_DEFAULT_INSTALLED_MODULES += $(FINGERID_SYMLINKS)
+FINGERPR_IMAGES := \
+    fingerpr.b00 fingerpr.b01 fingerpr.b02 fingerpr.b03 fingerpr.mdt
+FINGERPR_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(FINGERPR_IMAGES)))
+$(FINGERPR_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "FINGERPR firmware link: $@"
 	@mkdir -p $(dir $@)
 	@rm -rf $@
-	$(hide) ln -sf /persist/WCNSS_wlan_dictionary.dat $@
+	$(hide) ln -sf /firmware/image/$(notdir $@) $@
+ALL_DEFAULT_INSTALLED_MODULES += $(FINGERPR_SYMLINKS)
+GOODIXFP_IMAGES := \
+    goodixfp.b00 goodixfp.b01 goodixfp.b02 goodixfp.b03 goodixfp.mdt
+GOODIXFP_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(GOODIXFP_IMAGES)))
+$(GOODIXFP_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "GOODIXFP firmware link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /firmware/image/$(notdir $@) $@
+ALL_DEFAULT_INSTALLED_MODULES += $(GOODIXFP_SYMLINKS)
+SYNAFP_IMAGES := \
+    synafp.b00 synafp.b01 synafp.b02 synafp.b03 synafp.mdt
+SYNAFP_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(SYNAFP_IMAGES)))
+$(SYNAFP_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "SYNAFP firmware link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	$(hide) ln -sf /firmware/image/$(notdir $@) $@
+ALL_DEFAULT_INSTALLED_MODULES += $(SYNAFP_SYMLINKS)
+FPCTZAPP_IMAGES := \
+    fpctzapp.b00 fpctzapp.b01 fpctzapp.b02 fpctzapp.b03 fpctzapp.mdt
+FPCTZAPP_SYMLINKS := $(addprefix $(TARGET_OUT_ETC)/firmware/,$(notdir $(FPCTZAPP_IMAGES)))
+$(FPCTZAPP_SYMLINKS): $(LOCAL_INSTALLED_MODULE)
+	@echo "FPCTZAPP firmware link: $@"
+	@mkdir -p $(dir $@)
+	@rm -rf $@
+	@$(hide) ln -sf /firmware/image/$(notdir $@) $@
+ALL_DEFAULT_INSTALLED_MODULES += $(FPCTZAPP_SYMLINKS)
 
-ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_PERSIST_DICT_SYMLINK)
+WCNSS_CFG_SYMLINK := $(TARGET_OUT_VENDOR)/firmware/wlan/prima/WCNSS_qcom_cfg.ini
+$(WCNSS_CFG_SYMLINK): $(LOCAL_INSTALLED_MODULE)
+	@mkdir -p $(dir $@)
+	$(hide) ln -sf /data/vendor/wifi/$(notdir $@) $@
+
+ALL_DEFAULT_INSTALLED_MODULES += $(WCNSS_CFG_SYMLINK)
+
+
 
 endif
