@@ -3,8 +3,6 @@
 # init.nb.rc
 # For all nubia projects defined in device/zte
 
-#import init.nb.sensor.rc
-
 service gx_fpd /system/vendor/bin/gx_fpd
     class core
     user system
@@ -40,6 +38,9 @@ on boot
     chown system system /dev/cpuset/camera-daemon
     chown system system /dev/cpuset/camera-daemon/tasks
     chmod 0664 /dev/cpuset/camera-daemon/tasks
+
+on property:goodix.fp.service.ready=1
+   start fps_hal
 
 on property:persist.sys.fp.onstart=1
    start fps_hal
