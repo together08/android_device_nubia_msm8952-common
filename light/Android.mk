@@ -19,10 +19,10 @@ LOCAL_SHARED_LIBRARIES := \
     libutils \
     android.hardware.light@2.0
 
-ifneq (,$(filter nx589j,$(TARGET_DEVICE)))
-    LOCAL_CFLAGS += -DNO_HOME_LED
-    LOCAL_CFLAGS += -DMAX_BACKLIGTH_4095
-endif
+#ifneq (,$(filter nx589j,$(TARGET_DEVICE)))
+#    LOCAL_CFLAGS += -DNO_HOME_LED
+#    LOCAL_CFLAGS += -DMAX_BACKLIGTH_4095
+#endif
 
 include $(BUILD_EXECUTABLE)
 
