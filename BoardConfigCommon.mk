@@ -16,6 +16,8 @@
 
 VENDOR_PATH := device/nubia/msm8952-common
 
+TARGET_SPECIFIC_HEADER_PATH := $(VENDOR_PATH)/include
+
 # Bootloader
 TARGET_BOOTLOADER_BOARD_NAME := msm8952
 TARGET_NO_BOOTLOADER := true
@@ -176,6 +178,9 @@ DEVICE_MATRIX_FILE   := $(VENDOR_PATH)/compatibility_matrix.xml
 
 # IPA
 USE_DEVICE_SPECIFIC_DATA_IPA_CFG_MGR := true
+
+# Keylayout
+PRODUCT_COPY_FILES := $(filter-out frameworks/base/data/keyboards/qwerty.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/qwerty.kl, $(PRODUCT_COPY_FILES))
 
 # Keymaster
 TARGET_PROVIDES_KEYMASTER := true
