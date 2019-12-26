@@ -38,7 +38,7 @@ fi
 setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT" true
 
 # Copyright headers and guards
-write_headers "nx589j nx591j"
+write_headers "nx529j"
 
 # Main Qcom blobs
 write_makefiles "$MY_DIR"/proprietary-files-qc.txt
@@ -67,5 +67,3 @@ if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
     # We are done!
     write_footers
 fi
-1
-Downloading1

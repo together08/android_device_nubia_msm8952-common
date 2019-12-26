@@ -72,5 +72,3 @@ if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
 fi
 
 "$MY_DIR"/setup-makefiles.sh
-1
-Downloading1

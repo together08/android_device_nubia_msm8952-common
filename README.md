@@ -1,4 +1,4 @@
 Copyright 2019 - The MoKee Project
 =======================================================
 
-Common Device configuration for Nubia Z17 MiniS(nx589j) & Nubia Z17 Lite(nx591j)
+Common Device configuration for Nubia Z11 Mini(nx529j) & Nubia N940Sc_V3
