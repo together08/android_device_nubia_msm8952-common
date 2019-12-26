@@ -225,19 +225,6 @@ PRODUCT_PACKAGES += \
     android.system.net.netd@1.0 \
     libandroid_net
 
-# NFC
-PRODUCT_PACKAGES += \
-    android.hardware.nfc@1.0-impl-bcm \
-    android.hardware.nfc@1.0-service \
-    com.android.nfc_extras \
-    NfcNci \
-    Tag
-
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/nfc/libnfc-nci.conf:system/etc/libnfc-nci.conf \
-    $(LOCAL_PATH)/nfc/libnfc-nci-20797b00.conf:system/etc/libnfc-nci-20797b00.conf \
-    $(LOCAL_PATH)/nfc/nfcee_access.xml:system/etc/nfcee_access.xml
-
 # OMX
 PRODUCT_PACKAGES += \
     libc2dcolorconvert \
@@ -266,8 +253,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml \
     frameworks/native/data/etc/android.hardware.fingerprint.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.fingerprint.xml \
     frameworks/native/data/etc/android.hardware.location.gps.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.gps.xml \
-    frameworks/native/data/etc/android.hardware.nfc.hce.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.hce.xml \
-    frameworks/native/data/etc/android.hardware.nfc.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.nfc.xml \
     frameworks/native/data/etc/com.nxp.mifare.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nxp.mifare.xml \
     frameworks/native/data/etc/android.hardware.opengles.aep.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.opengles.aep.xml \
     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.accelerometer.xml \
