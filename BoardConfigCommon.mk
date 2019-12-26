@@ -128,6 +128,9 @@ TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
     /system/bin/mm-qcamera-daemon=23 \
     /system/bin/mediaserver=23
 
+# Shims
+TARGET_LD_SHIM_LIBS := \
+    /system/vendor/lib/hw/camera.vendor.msm8952.so|libshim_camera1.so
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
