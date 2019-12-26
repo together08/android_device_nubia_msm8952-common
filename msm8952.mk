@@ -78,10 +78,21 @@ PRODUCT_COPY_FILES += \
 # Camera
 PRODUCT_PACKAGES += \
     android.hardware.camera.provider@2.4-impl \
-    android.hardware.camera.provider@2.4-service \
+    camera.device@1.0-impl \
+    camera.device@3.2-impl \
+    vendor.qti.hardware.camera.device@1.0 \
+    vendor.qti.hardware.camera.device@1.0_vendor \
     camera.msm8952 \
-    libmm-qcamera \
+    libmm-omxcore \
     Snap
+
+#Face  detection extension
+PRODUCT_PACKAGES += \
+    org.codeaurora.camera
+
+# Disable camera Treble path
+PRODUCT_PROPERTY_OVERRIDES += \
+    camera.disable_treble=true
 
 # Configstore
 PRODUCT_PACKAGES += \
