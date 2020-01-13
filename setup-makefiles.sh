@@ -40,17 +40,10 @@ setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT" true
 # Copyright headers and guards
 write_headers "nx529j"
 
-# Main Qcom blobs
-write_makefiles "$MY_DIR"/proprietary-files-qc.txt
+# The standard common blobs
+write_makefiles "$MY_DIR"/proprietary-files.txt
 
-# Blobs for TWRP data decryption
-cat << EOF >> "$BOARDMK"
-ifeq (\$(WITH_TWRP),true)
-TARGET_RECOVERY_DEVICE_DIRS += vendor/$VENDOR/$DEVICE_COMMON/proprietary
-endif
-EOF
-
-# Finish
+# We are done!
 write_footers
 
 if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
