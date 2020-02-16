@@ -117,6 +117,8 @@ TARGET_LD_SHIM_LIBS := \
     /system/vendor/lib/hw/camera.vendor.msm8952.so|libshim_camera1.so \
     /system/vendor/lib/hw/camera.vendor.msm8952.so|libshim_camera2.so \
     /system/lib64/libFNVfbEngineLib.so|libshim_camera2.so \
+    /system/lib/libFNVfbEngineHAL.so|libshim_camera2.so
+
 # Charger
 BOARD_CHARGER_ENABLE_SUSPEND := true
 BOARD_CHARGER_DISABLE_INIT_BLANK := true
