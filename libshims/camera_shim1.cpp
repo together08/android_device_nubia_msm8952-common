@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-#include <gui/ISurfaceComposer.h>
+#include <string>
+
+#include <ui/GraphicBuffer.h>
 
 extern "C" void _ZN7android20DisplayEventReceiverC1ENS_16ISurfaceComposer11VsyncSourceE();
 
