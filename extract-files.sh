@@ -23,9 +23,9 @@ SRC=~/
 MY_DIR="${BASH_SOURCE%/*}"
 if [[ ! -d "$MY_DIR" ]]; then MY_DIR="$PWD"; fi
 
-MK_ROOT="$MY_DIR"/../../..
+EXTHM_ROOT="$MY_DIR"/../../..
 
-HELPER="$MK_ROOT"/vendor/mokee/build/tools/extract_utils.sh
+HELPER="$EXTHM_ROOT"/vendor/exthm/build/tools/extract_utils.sh
 if [ ! -f "$HELPER" ]; then
     echo "Unable to find helper script at $HELPER"
     exit 1
@@ -54,19 +54,19 @@ if [ -z "$SRC" ]; then
 fi
 
 # Initialize the helper
-setup_vendor "$DEVICE_COMMON" "$VENDOR" "$MK_ROOT" true "$CLEAN_VENDOR"
+setup_vendor "$DEVICE_COMMON" "$VENDOR" "$EXTHM_ROOT" true "$CLEAN_VENDOR"
 
 extract "$MY_DIR"/proprietary-files.txt "$SRC" "$SECTION"
 
-BLOB_ROOT="$MK_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary
+BLOB_ROOT="$EXTHM_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary
 echo ""$MY_DIR"/../$DEVICE/proprietary-files.txt"
 if [ -s "$MY_DIR"/../$DEVICE/proprietary-files.txt ]; then
     # Reinitialize the helper for device
-    setup_vendor "$DEVICE" "$VENDOR" "$MK_ROOT" false "$CLEAN_VENDOR"
+    setup_vendor "$DEVICE" "$VENDOR" "$EXTHM_ROOT" false "$CLEAN_VENDOR"
     extract "$MY_DIR"/../$DEVICE/proprietary-files.txt "$SRC" "$SECTION"
 fi
 
-COMMON_BLOB_ROOT="$MK_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary
+COMMON_BLOB_ROOT="$EXTHM_ROOT"/vendor/"$VENDOR"/"$DEVICE_COMMON"/proprietary
 patchelf --replace-needed android.frameworks.sensorservice@1.0.so android.frameworks.sensorservice@1.0-v27.so $COMMON_BLOB_ROOT/vendor/bin/slim_daemon
 patchelf --replace-needed android.hardware.gnss@1.0.so android.hardware.gnss@1.0-v27.so $COMMON_BLOB_ROOT/lib64/vendor.qti.gnss@1.0.so
 patchelf --replace-needed android.hardware.gnss@1.0.so android.hardware.gnss@1.0-v27.so $COMMON_BLOB_ROOT/vendor/lib64/vendor.qti.gnss@1.0_vendor.so
