@@ -1,5 +1,4 @@
-#! /vendor/bin/sh
-
+#!/system/bin/sh
 # Copyright (c) 2013-2014, The Linux Foundation. All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
@@ -31,11 +30,12 @@
 # start ril-daemon only for targets on which radio is present
 #
 baseband=`getprop ro.baseband`
-sgltecsfb=`getprop persist.vendor.radio.sglte_csfb`
+sgltecsfb=`getprop persist.radio.sglte_csfb`
 datamode=`getprop persist.data.mode`
+netmgr=`getprop ro.use_data_netmgrd`
 
 case "$baseband" in
-    "apq" | "sda" )
+    "apq")
     setprop ro.radio.noril yes
     stop ril-daemon
 esac
@@ -43,10 +43,6 @@ esac
 case "$baseband" in
     "msm" | "csfb" | "svlte2a" | "mdm" | "mdm2" | "sglte" | "sglte2" | "dsda2" | "unknown" | "dsda3")
     start qmuxd
-esac
-
-case "$baseband" in
-    "msm" | "csfb" | "svlte2a" | "mdm" | "mdm2" | "sglte" | "sglte2" | "dsda2" | "unknown" | "dsda3" | "sdm" | "sdx")
     start ipacm-diag
     start ipacm
     case "$baseband" in
@@ -57,7 +53,7 @@ case "$baseband" in
           if [ "x$sgltecsfb" != "xtrue" ]; then
               start qmiproxy
           else
-              setprop persist.vendor.radio.voice.modem.index 0
+              setprop persist.radio.voice.modem.index 0
           fi
         ;;
         "dsda2")
@@ -80,11 +76,14 @@ case "$baseband" in
             ;;
         "concurrent")
             start qti
-            start netmgrd
-            start port-bridge
+            if [ "$netmgr" = "true" ]; then
+                start netmgrd
+            fi
             ;;
         *)
-            start netmgrd
+            if [ "$netmgr" = "true" ]; then
+                start netmgrd
+            fi
             ;;
     esac
 esac
