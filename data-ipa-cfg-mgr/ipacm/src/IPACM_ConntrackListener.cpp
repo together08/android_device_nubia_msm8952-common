@@ -33,8 +33,6 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "IPACM_ConntrackListener.h"
 #include "IPACM_ConntrackClient.h"
 #include "IPACM_EvtDispatcher.h"
-#include "IPACM_Iface.h"
-#include "IPACM_Wan.h"
 
 IPACM_ConntrackListener::IPACM_ConntrackListener()
 {
@@ -96,7 +94,10 @@ void IPACM_ConntrackListener::event_callback(ipa_cm_event_id evt,
 	 case IPA_HANDLE_WAN_UP:
 			IPACMDBG_H("Received IPA_HANDLE_WAN_UP event\n");
 			CreateConnTrackThreads();
-			TriggerWANUp(data);
+			if(!isWanUp())
+			{
+				TriggerWANUp(data);
+			}
 			break;
 
 	 case IPA_HANDLE_WAN_DOWN:
@@ -115,12 +116,9 @@ void IPACM_ConntrackListener::event_callback(ipa_cm_event_id evt,
 			IPACMDBG_H("Received event: %d with ifname: %s and address: 0x%x\n",
 							 evt, ((ipacm_event_iface_up *)data)->ifname,
 							 ((ipacm_event_iface_up *)data)->ipv4_addr);
-			if(isWanUp())
-			{
-				CreateConnTrackThreads();
-				IPACM_ConntrackClient::UpdateUDPFilters(data, false);
-				IPACM_ConntrackClient::UpdateTCPFilters(data, false);
-			}
+			CreateConnTrackThreads();
+			IPACM_ConntrackClient::UpdateUDPFilters(data, false);
+			IPACM_ConntrackClient::UpdateTCPFilters(data, false);
 			break;
 
 	 case IPA_NEIGH_CLIENT_IP_ADDR_ADD_EVENT:
@@ -142,7 +140,7 @@ void IPACM_ConntrackListener::event_callback(ipa_cm_event_id evt,
 int IPACM_ConntrackListener::CheckNatIface(
    ipacm_event_data_all *data, bool *NatIface)
 {
-	int fd = 0, len = 0, cnt, i;
+	int fd = 0, len = 0, cnt, i, j;
 	struct ifreq ifr;
 	*NatIface = false;
 
@@ -212,11 +210,30 @@ int IPACM_ConntrackListener::CheckNatIface(
 					pNatIfaces[i].iface_name,
 					sizeof(pNatIfaces[i].iface_name)) == 0)
 		{
-			IPACMDBG_H("Nat iface (%s), entry (%d), dont cache",
-						pNatIfaces[i].iface_name, i);
-			iptodot("with ipv4 address: ", nat_iface_ipv4_addr[i]);
-			*NatIface = true;
-			return IPACM_SUCCESS;
+			/* copy the ipv4 address to filter out downlink connections
+				 ignore downlink after listening connection event from
+				 conntrack as it is not destinated to private ip address */
+			IPACMDBG("Interface (%s) is nat\n", ifr.ifr_name);
+			for (j = 0; j < MAX_IFACE_ADDRESS; j++)
+			{
+				/* check if duplicate NAT ip */
+				if (nat_iface_ipv4_addr[j] == data->ipv4_addr)
+				{
+					*NatIface = true;
+					return IPACM_SUCCESS;
+				}
+
+				if (nat_iface_ipv4_addr[j] == 0)
+				{
+					nat_iface_ipv4_addr[j] = data->ipv4_addr;
+					IPACMDBG_H("Nating connections of Interface (%s), entry (%d) ",
+						pNatIfaces[i].iface_name, j);
+					iptodot("with ipv4 address: ", nat_iface_ipv4_addr[j]);
+
+					*NatIface = true;
+					return IPACM_SUCCESS;
+				}
+			}
 		}
 	}
 
@@ -229,12 +246,6 @@ void IPACM_ConntrackListener::HandleNonNatIPAddr(
 	ipacm_event_data_all *data = (ipacm_event_data_all *)inParam;
 	bool NatIface = false;
 	int cnt, ret;
-
-	if (isStaMode)
-	{
-		IPACMDBG("In STA mode, don't add dummy rules for non nat ifaces\n");
-		return;
-	}
 
 	/* Handle only non nat ifaces, NAT iface should be handle
 	   separately to avoid race conditions between route/nat
@@ -250,9 +261,6 @@ void IPACM_ConntrackListener::HandleNonNatIPAddr(
 				if (nonnat_iface_ipv4_addr[cnt] == 0)
 				{
 					nonnat_iface_ipv4_addr[cnt] = data->ipv4_addr;
-					IPACMDBG("Add ip addr to non nat list (%d) ", cnt);
-					iptodot("with ipv4 address", nonnat_iface_ipv4_addr[cnt]);
-
 					/* Add dummy nat rule for non nat ifaces */
 					nat_inst->FlushTempEntries(data->ipv4_addr, true, true);
 					return;
@@ -356,14 +364,6 @@ void IPACM_ConntrackListener::TriggerWANUp(void *in_param)
 		 return;
 	 }
 
-	 if(isWanUp())
-	 {
-		 if (wan_ipaddr != wanup_data->ipv4_addr)
-			 TriggerWANDown(wan_ipaddr);
-		 else
-			 return;
-	 }
-
 	 WanUp = true;
 	 isStaMode = wanup_data->is_sta;
 	 IPACMDBG("isStaMode: %d\n", isStaMode);
@@ -387,32 +387,38 @@ int IPACM_ConntrackListener::CreateConnTrackThreads(void)
 
 	if(isCTReg == false)
 	{
-		ret = pthread_create(&tcp_thread, NULL, IPACM_ConntrackClient::TCPRegisterWithConnTrack, NULL);
-		if(0 != ret)
+		if(!tcp_thread)
 		{
-			IPACMERR("unable to create TCP conntrack event listner thread\n");
-			PERROR("unable to create TCP conntrack\n");
-			goto error;
+			ret = pthread_create(&tcp_thread, NULL, IPACM_ConntrackClient::TCPRegisterWithConnTrack, NULL);
+			if(0 != ret)
+			{
+				IPACMERR("unable to create TCP conntrack event listner thread\n");
+				PERROR("unable to create TCP conntrack\n");
+				return -1;
+			}
+
+			IPACMDBG("created TCP conntrack event listner thread\n");
+			if(pthread_setname_np(tcp_thread, "tcp ct listener") != 0)
+			{
+				IPACMERR("unable to set thread name\n");
+			}
 		}
 
-		IPACMDBG("created TCP conntrack event listner thread\n");
-		if(pthread_setname_np(tcp_thread, "tcp ct listener") != 0)
+		if(!udp_thread)
 		{
-			IPACMERR("unable to set thread name\n");
-		}
+			ret = pthread_create(&udp_thread, NULL, IPACM_ConntrackClient::UDPRegisterWithConnTrack, NULL);
+			if(0 != ret)
+			{
+				IPACMERR("unable to create UDP conntrack event listner thread\n");
+				PERROR("unable to create UDP conntrack\n");
+				goto error;
+			}
 
-		ret = pthread_create(&udp_thread, NULL, IPACM_ConntrackClient::UDPRegisterWithConnTrack, NULL);
-		if(0 != ret)
-		{
-			IPACMERR("unable to create UDP conntrack event listner thread\n");
-			PERROR("unable to create UDP conntrack\n");
-			goto error;
-		}
-
-		IPACMDBG("created UDP conntrack event listner thread\n");
-		if(pthread_setname_np(udp_thread, "udp ct listener") != 0)
-		{
-			IPACMERR("unable to set thread name\n");
+			IPACMDBG("created UDP conntrack event listner thread\n");
+			if(pthread_setname_np(udp_thread, "udp ct listener") != 0)
+			{
+				IPACMERR("unable to set thread name\n");
+			}
 		}
 
 		isCTReg = true;
@@ -430,18 +436,21 @@ int IPACM_ConntrackListener::CreateNatThreads(void)
 
 	if(isNatThreadStart == false)
 	{
-		ret = pthread_create(&udpcto_thread, NULL, IPACM_ConntrackClient::UDPConnTimeoutUpdate, NULL);
-		if(0 != ret)
+		if(!udpcto_thread)
 		{
-			IPACMERR("unable to create udp conn timeout thread\n");
-			PERROR("unable to create udp conn timeout\n");
-			goto error;
-		}
+			ret = pthread_create(&udpcto_thread, NULL, IPACM_ConntrackClient::UDPConnTimeoutUpdate, NULL);
+			if(0 != ret)
+			{
+				IPACMERR("unable to create udp conn timeout thread\n");
+				PERROR("unable to create udp conn timeout\n");
+				goto error;
+			}
 
-		IPACMDBG("created upd conn timeout thread\n");
-		if(pthread_setname_np(udpcto_thread, "udp conn timeout") != 0)
-		{
-			IPACMERR("unable to set thread name\n");
+			IPACMDBG("created upd conn timeout thread\n");
+			if(pthread_setname_np(udpcto_thread, "udp conn timeout") != 0)
+			{
+				IPACMERR("unable to set thread name\n");
+			}
 		}
 
 		isNatThreadStart = true;
@@ -454,20 +463,16 @@ error:
 
 void IPACM_ConntrackListener::TriggerWANDown(uint32_t wan_addr)
 {
-	int ret = 0;
-	IPACMDBG_H("Deleting ipv4 nat table with");
-	IPACMDBG_H(" public ip address(0x%x): %d.%d.%d.%d\n", wan_addr,
-			((wan_addr>>24) & 0xFF), ((wan_addr>>16) & 0xFF),
-			((wan_addr>>8) & 0xFF), (wan_addr & 0xFF));
+	 IPACMDBG_H("Deleting ipv4 nat table with");
+	 IPACMDBG_H(" public ip address(0x%x): %d.%d.%d.%d\n", wan_addr,
+		    ((wan_addr>>24) & 0xFF), ((wan_addr>>16) & 0xFF), 
+		    ((wan_addr>>8) & 0xFF), (wan_addr & 0xFF));
+	 
+	 WanUp = false;
 
 	 if(nat_inst != NULL)
 	 {
-		 ret = nat_inst->DeleteTable(wan_addr);
-		 if (ret)
-			 return;
-
-		 WanUp = false;
-		 wan_ipaddr = 0;
+		 nat_inst->DeleteTable(wan_addr);
 	 }
 }
 
@@ -695,18 +700,6 @@ bool IPACM_ConntrackListener::AddIface(
 	int cnt;
 
 	*isTempEntry = false;
-
-	/* Special handling for Passthrough IP. */
-	if (IPACM_Iface::ipacmcfg->ipacm_ip_passthrough_mode)
-	{
-		if (rule->private_ip == IPACM_Wan::getWANIP())
-		{
-			IPACMDBG("In Passthrough mode and entry matched with Wan IP (0x%x)\n",
-				rule->private_ip);
-			return true;
-		}
-	}
-
 	/* check whether nat iface or not */
 	for (cnt = 0; cnt < MAX_IFACE_ADDRESS; cnt++)
 	{
@@ -723,32 +716,27 @@ bool IPACM_ConntrackListener::AddIface(
 		}
 	}
 
-	if (!isStaMode)
+	/* check whether non nat iface or not, on Nat iface
+	   add dummy rule by copying public ip to private ip */
+	for (cnt = 0; cnt < MAX_IFACE_ADDRESS; cnt++)
 	{
-		/* check whether non nat iface or not, on Non Nat iface
-		   add dummy rule by copying public ip to private ip */
-		for (cnt = 0; cnt < MAX_IFACE_ADDRESS; cnt++)
+		if (nonnat_iface_ipv4_addr[cnt] != 0)
 		{
-			if (nonnat_iface_ipv4_addr[cnt] != 0)
+			if (rule->private_ip == nonnat_iface_ipv4_addr[cnt] ||
+				rule->target_ip == nonnat_iface_ipv4_addr[cnt])
 			{
-				if (rule->private_ip == nonnat_iface_ipv4_addr[cnt] ||
-					rule->target_ip == nonnat_iface_ipv4_addr[cnt])
-				{
-					IPACMDBG("matched non_nat_iface_ipv4_addr entry(%d)\n", cnt);
-					iptodot("AddIface(): Non Nat entry match with ip addr",
-							nonnat_iface_ipv4_addr[cnt]);
+				IPACMDBG("matched non_nat_iface_ipv4_addr entry(%d)\n", cnt);
+				iptodot("AddIface(): Non Nat entry match with ip addr",
+						nat_iface_ipv4_addr[cnt]);
 
-					rule->private_ip = rule->public_ip;
-					rule->private_port = rule->public_port;
-					return true;
-				}
+				rule->private_ip = rule->public_ip;
+				rule->private_port = rule->public_port;
+				return true;
 			}
 		}
-		IPACMDBG_H("Not mtaching with non-nat ifaces\n");
 	}
-	else
-		IPACMDBG("In STA mode, don't compare against non nat ifaces\n");
 
+	IPACMDBG_H("Not mtaching with non-nat ifaces\n");
 	if(pConfig == NULL)
 	{
 		pConfig = IPACM_Config::GetInstance();

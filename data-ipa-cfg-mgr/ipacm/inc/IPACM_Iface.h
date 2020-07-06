@@ -59,9 +59,9 @@ IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define IPV4_DEFAULT_FILTERTING_RULES 3
 
 #ifdef FEATURE_IPA_ANDROID
-#define IPV6_DEFAULT_FILTERTING_RULES 7
+#define IPV6_DEFAULT_FILTERTING_RULES 6
 #else
-#define IPV6_DEFAULT_FILTERTING_RULES 4
+#define IPV6_DEFAULT_FILTERTING_RULES 3
 #endif
 
 #define IPV6_DEFAULT_LAN_FILTERTING_RULES 1
@@ -97,7 +97,7 @@ public:
 	bool softwarerouting_act;
 
 	/* IPACM number of default route rules for ipv6*/
-	uint32_t num_dft_rt_v6;
+	int num_dft_rt_v6;
 
 	uint32_t dft_v4fl_rule_hdl[IPV4_DEFAULT_FILTERTING_RULES];
 	uint32_t dft_v6fl_rule_hdl[IPV6_DEFAULT_FILTERTING_RULES + IPV6_DEFAULT_LAN_FILTERTING_RULES];
@@ -128,9 +128,6 @@ public:
 
 	/*Configure the initial filter rules */
 	virtual int init_fl_rule(ipa_ip_type iptype);
-
-	/* Change IP Type.*/
-	void config_ip_type(ipa_ip_type iptype);
 
 	/* Get interface index */
 	virtual int ipa_get_if_index(char * if_name, int * if_index);
