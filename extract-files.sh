@@ -75,4 +75,4 @@ patchelf --replace-needed "libbase.so" "libbase-hax.so" $COMMON_BLOB_ROOT/vendor
 patchelf --replace-needed "libbase.so" "libbase-hax.so" $COMMON_BLOB_ROOT/vendor/lib64/lib-uceservice.so
 patchelf --replace-needed "libbase.so" "libbase-hax.so" $COMMON_BLOB_ROOT/vendor/bin/imsrcsd
 
-"$MY_DIR"/setup-makefiles.sh
+bash "$MY_DIR"/setup-makefiles.sh $@
